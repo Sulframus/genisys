@@ -187,18 +187,18 @@ function QCServer(){
             "Print-Server"{
                 $dataStructure.setting += IndividualCheck -Expected "Installed" -Actual {$($serverFeatures | Where-Object {$_.Name -eq $check}).InstallState}
             }
-            <#"Print Server Permissions"{
-                $dataStructure.setting += IndividualCheck -Expected "SG_DPWEUR_LP_APP_AD-AllPrintServers.Operators" -Actual {
+            "Print Server Permissions"{
+                $dataStructure.setting += IndividualCheck -Expected $PRINT_SERVER_PERMISSIONS -Actual {
                     $SID = Invoke-Command -Session $PSSession -ScriptBlock {
                         param($cred)
-                        New-PSDrive -Name AZ -PSProvider FileSystem -Root "\\DEWCPS201.dpweur.ad.dpworld.com\Share" -Credential $cred | Out-Null
+                        New-PSDrive -Name AZ -PSProvider FileSystem -Root $SHARE_PATH -Credential $cred | Out-Null
                         $security = AZ:\setprinter.exe -Show \\$env:COMPUTERNAME\ 3
                         Remove-PSDrive -Name AZ | Out-Null
                         ([Regex]::matches($security,"S-1-5-21-\d{1,10}-\d{1,10}-\d{1,10}-\d{1,10}") | Sort-Object -Unique).Value
                     } -ArgumentList $cred
                     (Get-ADGroup -Filter {SID -eq $SID}).Name
                 }
-            }#>
+            }
             "VM Memory Shares"{
                 $dataStructure.setting += IndividualCheck -Expected "Normal" -Actual {$VM.VMResourceConfiguration.MemSharesLevel}
             }
