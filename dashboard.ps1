@@ -191,7 +191,7 @@ function QCServer(){
                 $dataStructure.setting += IndividualCheck -Expected $PRINT_SERVER_PERMISSIONS -Actual {
                     $SID = Invoke-Command -Session $PSSession -ScriptBlock {
                         param($cred)
-                        New-PSDrive -Name AZ -PSProvider FileSystem -Root $SHARE_PATH -Credential $cred | Out-Null
+                        New-PSDrive -Name AZ -PSProvider FileSystem -Root "$SHARE_PATH\setprinter.exe" -Credential $cred | Out-Null
                         $security = AZ:\setprinter.exe -Show \\$env:COMPUTERNAME\ 3
                         Remove-PSDrive -Name AZ | Out-Null
                         ([Regex]::matches($security,"S-1-5-21-\d{1,10}-\d{1,10}-\d{1,10}-\d{1,10}") | Sort-Object -Unique).Value
